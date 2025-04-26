@@ -2,6 +2,9 @@
 import { Card } from "@/components/ui/card";
 import { Users, Database, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { toast } from "sonner";
 
 const stats = [
   {
@@ -28,6 +31,12 @@ const stats = [
 ];
 
 const Dashboard = () => {
+  const handleAddPatient = () => {
+    toast.success("Patient form submitted!", {
+      description: "Patient data would be saved to the database."
+    });
+  };
+
   return (
     <div className="p-8 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-8">
@@ -36,9 +45,39 @@ const Dashboard = () => {
           <p className="text-gray-600">Welcome back, Admin</p>
         </div>
         <div className="flex gap-4">
-          <button className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
-            Add Patient
-          </button>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button>Add Patient</Button>
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Add New Patient</SheetTitle>
+                <SheetDescription>
+                  Enter patient details and submit to add a new patient record.
+                </SheetDescription>
+              </SheetHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                  <label htmlFor="name" className="text-sm font-medium">Full Name</label>
+                  <input id="name" className="rounded-md border p-2" placeholder="Enter patient name" />
+                </div>
+                <div className="grid gap-2">
+                  <label htmlFor="age" className="text-sm font-medium">Age</label>
+                  <input id="age" type="number" className="rounded-md border p-2" placeholder="Enter age" />
+                </div>
+                <div className="grid gap-2">
+                  <label htmlFor="gender" className="text-sm font-medium">Gender</label>
+                  <select id="gender" className="rounded-md border p-2">
+                    <option value="">Select gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <Button onClick={handleAddPatient} className="mt-4">Submit</Button>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
 
