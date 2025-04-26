@@ -1,8 +1,7 @@
 
 import { Hospital, Database, Calendar, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const menuItems = [
   { icon: Hospital, label: "Dashboard", href: "/" },
@@ -13,15 +12,10 @@ const menuItems = [
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleNavigation = (href: string) => {
-    if (href === "/") {
-      navigate(href);
-    } else {
-      toast.info(`This page (${href}) hasn't been implemented yet.`, {
-        description: "Coming soon!"
-      });
-    }
+    navigate(href);
   };
 
   return (
@@ -35,7 +29,12 @@ const Sidebar = () => {
           <button
             key={item.label}
             onClick={() => handleNavigation(item.href)}
-            className="flex w-full items-center gap-3 px-4 py-3 text-left text-gray-700 hover:bg-primary/5 rounded-lg transition-colors"
+            className={cn(
+              "flex w-full items-center gap-3 px-4 py-3 text-left rounded-lg transition-colors",
+              location.pathname === item.href
+                ? "bg-primary text-white"
+                : "text-gray-700 hover:bg-primary/5"
+            )}
           >
             <item.icon className="h-5 w-5" />
             <span>{item.label}</span>

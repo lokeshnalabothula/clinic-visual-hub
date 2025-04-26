@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { toast } from "sonner";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const stats = [
   {
@@ -31,10 +33,31 @@ const stats = [
 ];
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const [patientName, setPatientName] = useState("");
+  const [patientAge, setPatientAge] = useState("");
+  const [patientGender, setPatientGender] = useState("");
+
   const handleAddPatient = () => {
-    toast.success("Patient form submitted!", {
-      description: "Patient data would be saved to the database."
-    });
+    if (!patientName || !patientAge || !patientGender) {
+      toast.error("Please fill all fields");
+      return;
+    }
+    
+    toast.success("Patient added successfully!");
+    setPatientName("");
+    setPatientAge("");
+    setPatientGender("");
+  };
+
+  const handleCardClick = (label: string) => {
+    if (label === "Total Patients") {
+      navigate("/patients");
+    } else if (label === "Departments") {
+      navigate("/departments");
+    } else if (label === "Appointments") {
+      navigate("/schedules");
+    }
   };
 
   return (
@@ -59,19 +82,37 @@ const Dashboard = () => {
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
                   <label htmlFor="name" className="text-sm font-medium">Full Name</label>
-                  <input id="name" className="rounded-md border p-2" placeholder="Enter patient name" />
+                  <input 
+                    id="name" 
+                    className="rounded-md border p-2" 
+                    placeholder="Enter patient name" 
+                    value={patientName}
+                    onChange={(e) => setPatientName(e.target.value)}
+                  />
                 </div>
                 <div className="grid gap-2">
                   <label htmlFor="age" className="text-sm font-medium">Age</label>
-                  <input id="age" type="number" className="rounded-md border p-2" placeholder="Enter age" />
+                  <input 
+                    id="age" 
+                    type="number" 
+                    className="rounded-md border p-2" 
+                    placeholder="Enter age" 
+                    value={patientAge}
+                    onChange={(e) => setPatientAge(e.target.value)}
+                  />
                 </div>
                 <div className="grid gap-2">
                   <label htmlFor="gender" className="text-sm font-medium">Gender</label>
-                  <select id="gender" className="rounded-md border p-2">
+                  <select 
+                    id="gender" 
+                    className="rounded-md border p-2"
+                    value={patientGender}
+                    onChange={(e) => setPatientGender(e.target.value)}
+                  >
                     <option value="">Select gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
                   </select>
                 </div>
                 <Button onClick={handleAddPatient} className="mt-4">Submit</Button>
@@ -83,7 +124,11 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {stats.map((stat) => (
-          <Card key={stat.label} className="p-6">
+          <Card 
+            key={stat.label} 
+            className="p-6 cursor-pointer hover:shadow-md transition-shadow"
+            onClick={() => handleCardClick(stat.label)}
+          >
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-gray-600">{stat.label}</p>
@@ -101,7 +146,11 @@ const Dashboard = () => {
           <h2 className="text-lg font-semibold mb-4">Recent Patients</h2>
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+              <div 
+                key={i} 
+                className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100"
+                onClick={() => navigate("/patients")}
+              >
                 <div className="w-10 h-10 rounded-full bg-gray-200" />
                 <div>
                   <p className="font-medium">Patient #{i}</p>
@@ -116,7 +165,11 @@ const Dashboard = () => {
           <h2 className="text-lg font-semibold mb-4">Department Status</h2>
           <div className="space-y-4">
             {["Cardiology", "Neurology", "Pediatrics"].map((dept) => (
-              <div key={dept} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div 
+                key={dept} 
+                className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100"
+                onClick={() => navigate("/departments")}
+              >
                 <span>{dept}</span>
                 <span className="px-2 py-1 bg-accent/10 text-accent rounded text-sm">Active</span>
               </div>
